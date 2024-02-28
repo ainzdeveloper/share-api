@@ -5,6 +5,52 @@ const app = express();
 app.get('/', (req, res) => {
     res.send('endpoints: /share?accessToken=your access token&shareUrl=urfbposturl&shareAmount=shareamount');
 });
+
+app.get('/tools/darkai', (req, res) => {
+  const question = req.query.question;
+  if (!question) {
+      return res.status(400).json({ error: 'Question Is Required, Use question=' });
+  }
+      let answer = '';
+
+    // Custom responses for specific queries
+    if (question.includes('who are you?')) {
+      answer = "I'm a Automated Bot was make on http://45.90.13.219:6765 Autobot, pls follow https://www.facebook.com/berlovesyou for more updates on autobot";
+    } else if (question.includes('who created you?')) {
+      answer = "I was created by Ainz.";
+    } else if (question.includes('who created you')) {
+      answer = "I was created by Ainz.";
+    } else if (question.includes('what is your model?')) {
+      answer = "my model is gpt3.5 turbo";
+    } else if (question.includes('what is your model?')) {
+      answer = "my model is gpt3.5 turbo";
+    } else if (question.includes('what is your model')) {
+      answer = "my model is gpt3.5 turbo";
+    } else if (question.includes('who are you')) {
+      answer = "I'm a Automated Bot, Nice to meet you!";
+    }
+
+    if (answer !== '') {
+      res.json({ message: answer });
+      return;
+    }
+  const url = 'https://useblackbox.io/chat-request-v4';
+  const data = {
+    textInput: question,
+    allMessages: [{user: question}],
+    stream: '',
+    clickedContinue: false,
+  };
+  axios.post(url, data)
+    .then(response => {
+      const message = response.data.response[0][0];
+      res.json({ message });
+    })
+    .catch(error => {
+      res.status(500).json({ error: 'An error occurred.' });
+    });
+});
+
 app.get('/share', async (req, res) => {
 
 const accessToken = req.query.accessToken;
