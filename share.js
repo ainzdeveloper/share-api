@@ -3,9 +3,9 @@ const app = express();
 const request = require('request');
 
 app.get('/share', async (req, res) => {
-    const accessToken = req.query.token;
-    const shareUrl = req.query.url;
-    const shareAmount = req.query.amount;
+    const accessToken = req.query.accessToken;
+    const shareUrl = req.query.shareUrl;
+    const shareAmount = req.query.shareAmount;
 
     if (!accessToken || !shareUrl || !shareAmount) {
       return res.status(400).json({ error: 'Token,URL, and Amount are required' });
