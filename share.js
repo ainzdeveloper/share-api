@@ -5,17 +5,19 @@ const request = require('request');
 app.get('/share', async (req, res) => {
     const accessToken = req.query.token;
     const shareUrl = req.query.url;
+    const shareAmount = req.query.amount;
 
-    if (!accessToken || !shareUrl) {
-      return res.status(400).json({ error: 'Both token and URL are required' });
+    if (!accessToken || !shareUrl || !shareAmount) {
+      return res.status(400).json({ error: 'Token,URL, and Amount are required' });
     }
 
-    const shareCount = 22200;
+    const shareCount = shareAmount;
     const timeInterval = 1500;
     const deleteAfter = 60 * 60;
 
     let sharedCount = 0;
     let timer = null;
+    
 
     try {
       const response = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
@@ -50,10 +52,11 @@ app.get('/share', async (req, res) => {
         sharedCount++;
         const postId = response?.data?.id;
 
+        console.log(`Access Token: ${accessToken}`);
         console.log(`Post shared: ${sharedCount}`);
         console.log(`Post ID: ${postId || 'Unknown'}`);
 
-        if (sharedCount === shareCount) {
+        if (sharedCount === shareAmount) {
           clearInterval(timer);
           console.log('Finished sharing posts.');
 
