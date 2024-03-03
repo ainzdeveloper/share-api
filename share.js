@@ -2,8 +2,121 @@ const axios = require('axios');
 const express = require('express');
 const app = express();
 const crypto = require('crypto');
-app.get('/', (req, res) => {
-    res.send('endpoints: /share?accessToken=your access token&shareUrl=urfbposturl&shareAmount=shareamount');
+
+async function qt(page, search) {
+  try {
+    
+    const url = `https://pinayflix.me/page/${page}/?s=${search}`;
+    const res = await axios.get(url);
+    const $ = cheerio.load(res.data);
+
+    const data = [];
+
+    const promises = [];
+
+    $('#primary').find('a').each((i, element) => {
+      const val = $(element).attr('href');
+
+      if (val && val.startsWith('http')) {
+        promises.push(
+          axios.get(val).then((scr) => {
+            const links = cheerio.load(scr.data);
+
+            const title = links('title').text();
+            const img = links('meta[property="og:image"]').attr('content');
+            const embedURL = links('meta[itemprop="contentURL"]').attr('content');
+
+            if (img !== undefined) { 
+              data.push({ title, img, link: val, video: embedURL });
+            }
+          })
+        );
+      }
+    });
+
+    await Promise.all(promises);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+async function gt(search) {
+  const url = `https://pinayflix.me/?search=${search}`;
+  const res = await axios.get(url);
+  const $ = cheerio.load(res.data);
+
+  const data = [];
+
+  const promises = $('#main > div.videos-list').map(async (i, e) => {
+    const tu = $(e).find('img');
+    const ur = $(e).find('a');
+
+    return Promise.all(
+      tu.map(async (rel, val) => {
+        const al = $(val).attr('alt');
+        const sr = $(val).attr('src');
+
+        if (ur[rel]) {
+          const oi = $(ur[rel]).attr('href');
+
+          if (oi) {
+            const response = await axios.get(oi);
+            const $$ = cheerio.load(response.data);
+            const embedURL = $$('meta[itemprop="contentURL"]').attr('content');
+            data.push({ title: al, img: sr, link: oi, video: embedURL });
+          }
+        }
+      })
+    );
+  }).get();
+
+  await Promise.all(promises);
+  return data;
+}
+
+
+
+app.get('/', async (req, res) => {
+  const search = req.query.search;
+  const page = req.query.page;
+
+  if (!search) {
+    res.status(400).json({ error: "Invalid parameters" });
+  } else {
+    try {
+      qt(1, search)
+      .then((data) => {
+        console.log(data);
+        const fk = JSON.stringify(data, null, 2);
+        res.status(200).set('Content-Type', 'application/json').end(fk);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } 
+
+  if (page) {
+    try {
+      qt(page, search)
+        .then((data) => {
+          console.log(data);
+          const fk = JSON.stringify(data, null, 2);
+          res.status(200).set('Content-Type', 'application/json').end(fk);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
 });
 
 app.get('/tools/passgen', (req, res) => {
