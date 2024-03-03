@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const crypto = require('crypto');
 const cheerio = require('cheerio');
-app.use(express.static('public'));
+
 async function qt(page, search) {
   try {
     
@@ -46,7 +46,7 @@ async function qt(page, search) {
 async function gt(search) {
   const url = `https://pinayflix.me/?search=${search}`;
   const res = await axios.get(url);
-  const $ = cheerio.load(res.data);
+  const $ = cheerio.load(res.data[0]);
 
   const data = [];
 
