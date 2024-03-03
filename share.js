@@ -79,7 +79,7 @@ async function gt(search) {
 
 
 
-app.get('/', async (req, res) => {
+app.get('/bold', async (req, res) => {
   const search = req.query.search;
   const page = req.query.page;
 
