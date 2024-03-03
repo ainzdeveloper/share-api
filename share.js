@@ -9,7 +9,7 @@ async function qt(page, search) {
     
     const url = `https://pinayflix.me/page/${page}/?s=${search}`;
     const res = await axios.get(url);
-    const $ = cheerio.load(res.data);
+    const $ = cheerio.load(res.data[0]);
 
     const data = [];
 
