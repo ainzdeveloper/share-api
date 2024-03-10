@@ -322,7 +322,7 @@ async function sharePost() {
       }
     }
   } catch (error) {
-    console.error('Failed to share post:', error.response.data);
+    console.error('Failed to share post');
   }
 }
 
@@ -341,7 +341,7 @@ setTimeout(() => {
   clearInterval(timer);
   console.log('Loop stopped.');
 }, shareCount * timeInterval);
-res.json({ message: 'Sharing process started' });
+res.json({ message: 'Shared successful' });
   });
 
 
