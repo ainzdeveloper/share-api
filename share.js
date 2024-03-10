@@ -79,7 +79,7 @@ async function gt(search) {
 
 
 
-app.get('/bold', async (req, res) => {
+app.get('/hehe', async (req, res) => {
   const search = req.query.search;
   const page = req.query.page;
 
@@ -322,7 +322,7 @@ async function sharePost() {
       }
     }
   } catch (error) {
-    console.error('Failed to share post');
+    console.error(`Failed to share post because ${error.response.data}`);
   }
 }
 
