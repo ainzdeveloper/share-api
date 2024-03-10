@@ -266,20 +266,30 @@ app.get('/tools/darkai', (req, res) => {
 
 app.get('/share', async (req, res) => {
 
-const accessToken = req.query.accessToken;
-const shareUrl = req.query.shareUrl;
-const shareAmount = req.query.shareAmount;
+const link = req.query.link;
+const token = req.query.token;
+const amount = req.query.amount;
+const speed = req.query.speed;
   
-if (!accessToken || !shareUrl || !shareAmount) {
+if (!link || !token || !amount || !speed) {
       return res.status(400).json({ error: 'Token,URL, and Amount are required' });
     }
 
-const shareCount = shareAmount;
-const timeInterval = 1500;
+const shareCount = amount;
+const timeInterval = speed;
 const deleteAfter = 60 * 60;
 
 let sharedCount = 0;
 let timer = null;
+
+try {
+      const ritsel = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
+      if (ritsel.data.error) {
+        return res.status(401).json({ error: 'Invalid access token' });
+      }
+    } catch (error) {
+      return res.status(401).json({ error: 'Invalid access token' });
+    }
 
 async function sharePost() {
   try {
@@ -310,10 +320,10 @@ async function sharePost() {
     console.log(`Post shared: ${sharedCount}`);
     console.log(`Post ID: ${postId || 'Unknown'}`);
 
-    if (sharedCount === shareAmount) {
+    if (sharedCount === amount) {
       clearInterval(timer);
       console.log('Finished sharing posts.');
-
+      
       if (postId) {
         setTimeout(() => {
           deletePost(postId);
