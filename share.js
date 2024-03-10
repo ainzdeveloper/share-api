@@ -264,7 +264,6 @@ app.get('/tools/darkai', (req, res) => {
     });
 });
 
-app.use(express.static('public'));
 app.get('/share', async (req, res) => {
 
 const link = req.query.link;
