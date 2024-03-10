@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const crypto = require('crypto');
 const cheerio = require('cheerio');
-
+app.use(express.static('public'));
 async function qt(page, search) {
   try {
     
