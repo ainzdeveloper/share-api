@@ -283,15 +283,6 @@ const deleteAfter = 60 * 60;
 let sharedCount = 0;
 let timer = null;
 
-try {
-      const ritsel = await axios.get(`https://graph.facebook.com/me?access_token=${accessToken}`);
-      if (ritsel.data.error) {
-        return res.status(401).json({ error: 'Invalid access token' });
-      }
-    } catch (error) {
-      return res.status(401).json({ error: 'Invalid access token' });
-    }
-
 async function sharePost() {
   try {
     const response = await axios.post(
