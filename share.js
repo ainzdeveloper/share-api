@@ -6,7 +6,7 @@ const time = moment.tz("Asia/Manila").format("DD/MM/YYYY || HH:mm:s");
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
-app.get('/share', async (req, res) => {
+app.post('/share', async (req, res) => {
 
 const link = req.query.link;
 const token = req.query.token;
