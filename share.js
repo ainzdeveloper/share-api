@@ -375,5 +375,40 @@ app.get('/tiktok/api', async (req, res) => {
   }
 })
 
+
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+app.get('/gemini', async (req, res) => {
+
+const prompt = req.query.prompt;
+const apikey = req.query.apikey;
+// Access your API key as an environment variable (see "Set up your API key" above)
+const genAI = new GoogleGenerativeAI(apikey);
+
+async function run() {
+try {
+  const generationConfig = {
+  stopSequences: ["red"],
+  maxOutputTokens: 1024,
+  temperature: 1,
+  topP: 1,
+  topK: 40,
+};
+  // For text-only input, use the gemini-pro model
+  const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig });
+
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  const text = response.text();
+  console.log(text);
+ res.json({ success: text});
+ } catch(e) {
+console.log(e)
+  res.json({ error: e.message})
+     }
+}
+  run(prompt)
+});
+
 app.listen(port, () => console.log('Example app listening on port 3000!'));
  
