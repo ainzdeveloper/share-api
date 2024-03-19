@@ -185,7 +185,7 @@ app.post('/codm', async function (req, res) {
   
   try {
     const randomCodm = Math.floor(Math.random() * addedLinks.length);
-    const response = await axios.get(`https://eurix-api.replit.app/api/tiktokdl/tools?link=${addedLinks[randomCodm]}`);
+    const response = await axios.get(`/tiktokdl/api?url=${addedLinks[randomCodm]}`);
     res.json(response.data);
   } catch (error) {
     console.error(error);
@@ -363,6 +363,17 @@ app.get('/api/lyrics/:trackId', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
+const tiktok = require('./tiktokdl');
+
+app.get('/tiktok/api', async (req, res) => {
+  if(!!req.query.url) {
+    let data = await tiktok.getVideoInfo(req.query.url);
+    res.type('json').send(JSON.stringify(data, null, 2) + '\n');
+  } else {
+    res.type('json').send(JSON.stringify({ message: "Please input url." }, null, 2) + '\n');
+  }
+})
 
 app.listen(port, () => console.log('Example app listening on port 3000!'));
  
