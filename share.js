@@ -185,7 +185,7 @@ app.post('/codm', async function (req, res) {
   
   try {
     const randomCodm = Math.floor(Math.random() * addedLinks.length);
-    const response = await axios.get(`/tiktokdl/api?url=${addedLinks[randomCodm]}`);
+    const response = await axios.get(`https://share-apis.onrender.com/tiktok/api?url=${addedLinks[randomCodm]}`);
     res.json(response.data);
   } catch (error) {
     console.error(error);
