@@ -4,6 +4,8 @@ const port = 3000;
 const app = express();
 const moment = require("moment-timezone");
 const time = moment.tz("Asia/Manila").format("DD/MM/YYYY || HH:mm:s");
+const cors = require('cors')
+
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
@@ -377,7 +379,7 @@ app.get('/tiktok/api', async (req, res) => {
 
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
+app.use(cors())
 app.get('/gemini', async (req, res) => {
 
 const prompt = req.query.prompt;
